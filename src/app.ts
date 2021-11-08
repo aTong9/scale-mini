@@ -4,7 +4,7 @@ import '@/utils/vue-ext'
 // import '@nutui/nutui-taro/dist/style.css';
 import '@nutui/nutui-taro/dist/styles/themes/default.scss'
 import './app.scss'
-import { Icon, Collapse, CollapseItem, Picker, Popup, Uploader, Button, OverLay } from '@nutui/nutui-taro'
+import { Icon, Collapse, CollapseItem, Picker, Popup, Uploader, Button, OverLay, Toast } from '@nutui/nutui-taro'
 const App: any = createApp({
   onShow(options) {
     console.log(options)
@@ -19,6 +19,7 @@ const App: any = createApp({
   .use(Picker)
   .use(Popup)
   .use(OverLay)
+  .use(Toast)
 
 App.use(store)
 export default App

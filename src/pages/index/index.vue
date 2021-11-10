@@ -13,7 +13,7 @@
         <view class="name">bin></view>
       </view>
     </view>
-    <view class="container">
+    <view ref="container" class="container">
       <view>
         <view
           v-for="(item, idx) in state.messageList"
@@ -48,7 +48,7 @@
                 :key="idx"
                 class="answer-item"
                 @click="scaleListClick(item)"
-                >{{ item }}</view
+              >{{ item }}</view
               >
             </view>
           </view>
@@ -59,8 +59,8 @@
               v-for="(item, idx) in state.answerItemList"
               :key="idx"
               class="answer-item"
-              @click="answerItemClick(item)"
-              >{{ item }}</view
+              @click="answerItemClick(item, idx)"
+            >{{ item }}</view
             >
           </view>
         </view>
@@ -76,14 +76,27 @@
 
 <script lang="ts" setup>
 // http://www.360doc.com/content/13/0120/09/7223599_261313418.shtml
+// https://m.haodf.com/neirong/wenzhang/5271440951.html
 import Taro from '@tarojs/taro'
-import { reactive, computed, onMounted, watch } from 'vue'
+import { reactive, computed, onMounted, watch, ref } from 'vue'
 import { useStore } from 'vuex'
 import LoginModal from '../../components/LoginModal.vue'
 import classifyJson from './classify.json'
 import scaleJson from './index.json'
 
 const store = useStore()
+const container: any = ref(null)
+const Nine = reactive({
+  ping: 0,
+  qixu: 0,
+  yang: 0,
+  yin: 0,
+  tan: 0,
+  shi: 0,
+  pi: 0,
+  qiyu: 0,
+  te: 0
+})
 const state = reactive({
   msg: '首页',
   fileUrl: 'http://39.107.67.8:5050/static/img/',
@@ -97,6 +110,7 @@ const state = reactive({
   answerIndex: -1,
   isQuestion: false,
   isAnswer: false,
+  resultNumArr: [] as any,
   classify: [
     {
       icon: 'message',
@@ -148,6 +162,7 @@ const scaleListBack = (item: any) => {
   state.scaleListVisible = false
 }
 const scaleListClick = (item: any) => {
+  console.log('scaleListClick', item)
   state.classifyVisible = false
   state.scaleListVisible = false
   state.answerItemVisible = true
@@ -163,34 +178,109 @@ const scaleListClick = (item: any) => {
 watch(
   () => state.answerIndex,
   (index: number) => {
-    console.log('watch==index', index, state.scaleList[2].q)
+    console.log('watch==index', index, container.value)
     // if (state.isQuestion) {
     state.messageList.push({
       type: 'left',
-      msg: state.scaleList[index].q
+      msg: state.scaleList.nine[index]
     })
     // }
-    state.answerItemList = state.scaleList[state.answerIndex].a
+    // 没有=1分; 很少= 2分; 有时=3分; 经常=4分; 总是=5分
+    state.answerItemList = ['没有', '很少', '有时', '经常', '总是']
+    // scrollToBottom()
   }
 )
-const answerItemClick = (item: any) => {
-  console.log('answerItemClick', item)
+const answerItemClick = (item: any, index: number) => {
+  state.resultNumArr.push(index + 1)
+  console.log('answerItemClick', item, index, state.scaleList.nine.length, state.resultNumArr)
   state.isQuestion = false
   state.messageList.push({
     type: 'right',
     msg: item
   })
+  if (state.resultNumArr.length === state.scaleList.nine.length) {
+    // 最后一道题
+    state.classifyVisible = false
+    state.scaleListVisible = false
+    state.answerItemVisible = false
+    const result: any = state.resultNumArr
+    Nine.ping = handleResultNum('1+2*+7*+8*+22*+53+54*')
+    Nine.qixu = handleResultNum('2+3+4+5+6+7+23+27')
+    Nine.yang = handleResultNum('18+19+20+22+23+52+55')
+    Nine.yin = handleResultNum('17+21+29+35+38+44+46+57')
+    Nine.tan = handleResultNum('14+16+28+42+49+50+51+58')
+    Nine.shi = handleResultNum('39+41+48+56+57+59+60')
+    Nine.pi = handleResultNum('33+36+37+40+43+44+45')
+    Nine.qiyu = handleResultNum('9+10+11+12+13+15+47')
+    Nine.te = handleResultNum('24+25+26+30+31+32+34')
+    console.log('Nine=====', Nine)
+    // Nine.ping =
+    //   result[0] +
+    //   handleReverse(result[0]) +
+    //   handleReverse(result[6]) +
+    //   handleReverse(result[7]) +
+    //   handleReverse(result[21]) +
+    //   result[52] +
+    //   handleReverse(result[53])
+    return
+  }
   state.answerIndex++
+}
+const handleReverse = (num: number) => {
+  // 处理逆向分 2\7\8\22\54
+  let resultNum = 0
+  switch (num) {
+    case 1:
+      resultNum = 5
+      break
+    case 2:
+      resultNum = 4
+      break
+    case 3:
+      resultNum = 3
+      break
+    case 4:
+      resultNum = 2
+      break
+    case 5:
+      resultNum = 1
+      break
+  }
+  return resultNum
+}
+const handleResultNum = (result: string) => {
+  const resultArr = result.split('+')
+  let resultNum1 = 0
+  let resultNum2 = 0
+  for (let i = 0; i < resultArr.length; i++) {
+    if (resultArr[i].indexOf('*') > 0) {
+      const curQ = +resultArr[i].slice(0, -1)
+      resultNum1 += handleReverse(state.resultNumArr[curQ - 1])
+      console.log('resultNum1', resultNum1)
+    } else {
+      resultNum2 += state.resultNumArr[+resultArr[i] - 1]
+      console.log('resultNum2', resultNum2)
+    }
+    // return resultNum
+  }
+  console.log('resultNum=====', resultNum1 + resultNum2)
+  return resultNum1 + resultNum2
 }
 onMounted(() => {
   state.scaleList = scaleJson
   state.classifyList = classifyJson
-  console.log('scaleJson', state.scaleList, state.classifyList, state.scaleList[2].q)
+  console.log('scaleJson', state.scaleList, state.classifyList)
   // Taro.setNavigationBarColor({
   //   frontColor: '#ffffff',
   //   backgroundColor: '#333131'
   // })
 })
+// 滚动到底部
+const scrollToBottom = () => {
+  setTimeout(() => {
+    container.value.scrollTop = 99999
+  }, 10)
+}
 </script>
 
 <style lang="scss" scoped>

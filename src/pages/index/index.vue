@@ -8,11 +8,22 @@
       </div>
     </view> -->
     <view class="header">
-      <view class="header-right">
-        <image class="headeimg" src="@/assets/imgs/no-logo.png" />
-        <view class="name">bin></view>
+      <nut-progress
+        v-if="state.percentage && !state.resultVisible"
+        :percentage="state.percentage"
+        stroke-width="4"
+        stroke-color="linear-gradient(270deg, rgba(18,126,255,1) 0%,rgba(32,147,255,1) 32.815625%,rgba(13,242,204,1) 100%)"
+        status="active"
+        :show-text="false"
+      />
+      <view class="header-block">
+        <view class="header-right">
+          <image class="headeimg" src="@/assets/imgs/no-logo.png" />
+          <view class="name">bin></view>
+        </view>
       </view>
     </view>
+
     <view ref="container" class="container">
       <view>
         <view
@@ -48,7 +59,7 @@
                 :key="idx"
                 class="answer-item"
                 @click="scaleListClick(item)"
-              >{{ item }}</view
+                >{{ item }}</view
               >
             </view>
           </view>
@@ -60,9 +71,12 @@
               :key="idx"
               class="answer-item"
               @click="answerItemClick(item, idx)"
-            >{{ item }}</view
+              >{{ item }}</view
             >
           </view>
+        </view>
+        <view v-if="state.resultVisible">
+          <NineChart3d id="nine" :data="Nine.data" />
         </view>
       </view>
       <view class="send-group">
@@ -83,29 +97,79 @@ import { useStore } from 'vuex'
 import LoginModal from '../../components/LoginModal.vue'
 import classifyJson from './classify.json'
 import scaleJson from './index.json'
+import NineChart3d from './components/nineChart3d.vue'
 
 const store = useStore()
 const container: any = ref(null)
-const Nine = reactive({
-  ping: 0,
-  qixu: 0,
-  yang: 0,
-  yin: 0,
-  tan: 0,
-  shi: 0,
-  pi: 0,
-  qiyu: 0,
-  te: 0
+const Nine: any = reactive({
+  data: [
+    {
+      key: '平和质',
+      value: 46.42857142857143
+    },
+    {
+      key: '气虚质',
+      value: 57.142857142857146
+    },
+    {
+      key: '阳虚质',
+      value: 40
+    },
+    {
+      key: '阴虚质',
+      value: 50
+    },
+    {
+      key: '痰湿质',
+      value: 46
+    },
+    {
+      key: '湿热质',
+      value: 34
+    },
+    {
+      key: '癖血质',
+      value: 57
+    },
+    {
+      key: '气郁质',
+      value: 60
+    },
+    {
+      key: '特禀质',
+      value: 53
+    }
+  ]
+  // pi: 46.42857142857143,
+  // ping: 57.142857142857146,
+  // qixu: 40.625,
+  // qiyu: 50,
+  // shi: 46.42857142857143,
+  // tan: 34.375,
+  // te: 57.142857142857146,
+  // yang: 60.714285714285715,
+  // yin: 53.125
+  // ping: 0,
+  // qixu: 0,
+  // yang: 0,
+  // yin: 0,
+  // tan: 0,
+  // shi: 0,
+  // pi: 0,
+  // qiyu: 0,
+  // te: 0
 })
 const state = reactive({
   msg: '首页',
+  percentage: 0,
   fileUrl: 'http://39.107.67.8:5050/static/img/',
-  scaleList: null,
+  scaleList: null as any,
   classifyList: null,
   answerGroupVisible: false,
   classifyVisible: true,
   scaleListVisible: false,
   answerItemVisible: false,
+  resultVisible: false,
   answerItemList: null,
   answerIndex: -1,
   isQuestion: false,
@@ -144,7 +208,7 @@ const state = reactive({
   messageList: [
     {
       type: 'left',
-      msg: '嗨，我是小测，您身边的智能测试管家'
+      msg: '嗨，欢迎来到量表元宇宙～我是小测，您身边的智能测试管家'
     },
     {
       type: 'left',
@@ -178,8 +242,9 @@ const scaleListClick = (item: any) => {
 watch(
   () => state.answerIndex,
   (index: number) => {
-    console.log('watch==index', index, container.value)
     // if (state.isQuestion) {
+    state.percentage = (state.answerIndex / state.scaleList.nine.length) * 100
+    console.log('watch==index', state.percentage, index, container.value)
     state.messageList.push({
       type: 'left',
       msg: state.scaleList.nine[index]
@@ -204,16 +269,17 @@ const answerItemClick = (item: any, index: number) => {
     state.scaleListVisible = false
     state.answerItemVisible = false
     const result: any = state.resultNumArr
-    Nine.ping = handleResultNum('1+2*+7*+8*+22*+53+54*')
-    Nine.qixu = handleResultNum('2+3+4+5+6+7+23+27')
-    Nine.yang = handleResultNum('18+19+20+22+23+52+55')
-    Nine.yin = handleResultNum('17+21+29+35+38+44+46+57')
-    Nine.tan = handleResultNum('14+16+28+42+49+50+51+58')
-    Nine.shi = handleResultNum('39+41+48+56+57+59+60')
-    Nine.pi = handleResultNum('33+36+37+40+43+44+45')
-    Nine.qiyu = handleResultNum('9+10+11+12+13+15+47')
-    Nine.te = handleResultNum('24+25+26+30+31+32+34')
+    Nine.data[0].value = handleResultNum('1+2*+7*+8*+22*+53+54*')
+    Nine.data[1].value = handleResultNum('2+3+4+5+6+7+23+27')
+    Nine.data[2].value = handleResultNum('18+19+20+22+23+52+55')
+    Nine.data[3].value = handleResultNum('17+21+29+35+38+44+46+57')
+    Nine.data[4].value = handleResultNum('14+16+28+42+49+50+51+58')
+    Nine.data[5].value = handleResultNum('39+41+48+56+57+59+60')
+    Nine.data[6].value = handleResultNum('33+36+37+40+43+44+45')
+    Nine.data[7].value = handleResultNum('9+10+11+12+13+15+47')
+    Nine.data[8].value = handleResultNum('24+25+26+30+31+32+34')
     console.log('Nine=====', Nine)
+    state.resultVisible = true
     // Nine.ping =
     //   result[0] +
     //   handleReverse(result[0]) +
@@ -256,20 +322,51 @@ const handleResultNum = (result: string) => {
     if (resultArr[i].indexOf('*') > 0) {
       const curQ = +resultArr[i].slice(0, -1)
       resultNum1 += handleReverse(state.resultNumArr[curQ - 1])
-      console.log('resultNum1', resultNum1)
     } else {
       resultNum2 += state.resultNumArr[+resultArr[i] - 1]
-      console.log('resultNum2', resultNum2)
     }
-    // return resultNum
   }
   console.log('resultNum=====', resultNum1 + resultNum2)
-  return resultNum1 + resultNum2
+  // 1、原始分: 原始分数=各个条目分值相加。注:标有*号者为逆向计分，1-5, 2-4, 3-3, 4-2, 5-1。  resultNum1 + resultNum2
+  // 2、转化分数:0-100分，分数越高，体质倾向越明显。转化分数=(原始分-条目数)X 100/(条目数X4)。
+  return Math.floor(((resultNum1 + resultNum2 - resultArr.length) * 100) / (resultArr.length * 4))
 }
 onMounted(() => {
   state.scaleList = scaleJson
   state.classifyList = classifyJson
   console.log('scaleJson', state.scaleList, state.classifyList)
+  const obj: any = {
+    pi: 42.86,
+    ping: 60.71,
+    qixu: 40.63,
+    qiyu: 60.71,
+    shi: 50.0,
+    tan: 62.5,
+    te: 42.86,
+    yang: 25.0,
+    yin: 46.88
+  }
+
+  const values = Object.keys(obj)
+    .map((e) => {
+      return obj[e]
+    })
+    .sort((a: any, b: any) => {
+      return b - a
+    })
+
+  console.log(
+    'a',
+    values,
+    Object.keys(obj).map((e) => {
+      return obj[e]
+    }),
+    Object.keys(obj)
+      .map((e) => {
+        return obj[e]
+      })
+      .findIndex((item) => item === values[0])
+  )
   // Taro.setNavigationBarColor({
   //   frontColor: '#ffffff',
   //   backgroundColor: '#333131'
@@ -291,26 +388,28 @@ const scrollToBottom = () => {
   flex-direction: column;
 }
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  box-shadow: 0 2px 8px rgba(165, 120, 120, 0.1);
-  padding: 5px 15px;
-  &-right {
+  .header-block {
     display: flex;
     align-items: center;
-    background: $primary-color;
-    color: #fff;
-    padding: 1px 6px;
-    border-radius: 30px;
-    .headeimg {
-      height: 30px;
-      width: 30px;
-      border-radius: 100%;
-    }
-    .name {
-      font-size: 14px;
-      margin-left: 5px;
+    justify-content: flex-end;
+    box-shadow: 0 2px 8px rgba(165, 120, 120, 0.1);
+    padding: 5px 15px;
+    .header-right {
+      display: flex;
+      align-items: center;
+      background: $primary-color;
+      color: #fff;
+      padding: 1px 6px;
+      border-radius: 30px;
+      .headeimg {
+        height: 30px;
+        width: 30px;
+        border-radius: 100%;
+      }
+      .name {
+        font-size: 14px;
+        margin-left: 5px;
+      }
     }
   }
 }

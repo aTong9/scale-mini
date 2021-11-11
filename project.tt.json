@@ -1,7 +1,7 @@
 {
   "miniprogramRoot": "./",
-  "projectname": "moon_universe_mini",
-  "description": "moon_universe_mini",
+  "projectname": "scale_mini",
+  "description": "scale_mini",
   "appid": "touristappid",
   "setting": {
     "urlCheck": true,

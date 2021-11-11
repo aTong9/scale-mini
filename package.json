@@ -1,8 +1,8 @@
 {
-  "name": "moon_universe_mini",
+  "name": "scale_mini",
   "version": "1.0.0",
   "private": true,
-  "description": "moon_universe_mini",
+  "description": "scale_mini",
   "templateInfo": {
     "name": "vue3-NutUI",
     "typescript": true,

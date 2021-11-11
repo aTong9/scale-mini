@@ -1,8 +1,8 @@
 {
   "miniprogramRoot": "dist/",
-  "projectname": "moon_universe_mini",
-  "description": "moon_universe_mini",
-  "appid": "wxb2dc6d5f23a453dc",
+  "projectname": "scale_mini",
+  "description": "scale_mini",
+  "appid": "wx3357fcf4264aef17",
   "setting": {
     "urlCheck": true,
     "es6": false,

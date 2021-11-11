@@ -11,7 +11,7 @@ function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 const config = {
-  projectName: 'moon_universe_mini',
+  projectName: 'scale_mini',
   date: '2021-9-16',
   designWidth: 375,
   deviceRatio: {

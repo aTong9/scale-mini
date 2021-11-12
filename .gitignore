@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
 build/
+dist/
 deploy_versions/
 .temp/
 

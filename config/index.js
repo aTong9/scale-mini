@@ -33,7 +33,8 @@ const config = {
     projectDirectory: path.resolve(__dirname, '..')
   },
   sourceRoot: 'src',
-  outputRoot: 'dist',
+  // outputRoot: 'dist',
+  outputRoot: 'docs', // 适配github pages
   plugins: ['@tarojs/plugin-html'],
   terser: {
     enable: true,

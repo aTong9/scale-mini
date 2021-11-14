@@ -76,7 +76,8 @@ const config = {
     }
   },
   h5: {
-    publicPath: './',
+    publicPath: './', // npm run build:h5  打包用这个
+    // publicPath: '/', // npm run dev:h5  本地调试用这个
     staticDirectory: 'static',
     esnextModules: ['nutui-taro'],
     postcss: {

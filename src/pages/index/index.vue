@@ -380,30 +380,30 @@ const scroll = (e) => {
 }
 // 滚动到底部
 const scrollToBottom = () => {
-  // setTimeout(() => {
-  const query = Taro.createSelectorQuery()
-  query
-    .select('#container')
-    .boundingClientRect((rect) => {
-      console.log('scrollTop', rect)
-      Taro.pageScrollTo({
-        scrollTop: 9999999,
-        // scrollTop: rect.height,
-        duration: 300,
-        success: (res) => {
-          console.log(res)
-        },
-        complete: (complete) => {
-          console.log('complete', complete)
-        }
-      })
-      // container.value.scrollTop
-    })
-    .exec()
+  setTimeout(() => {
+    // const query = Taro.createSelectorQuery()
+    // query
+    //   .select('#container')
+    //   .boundingClientRect((rect) => {
+    //     console.log('scrollTop', rect)
+    //     Taro.pageScrollTo({
+    //       scrollTop: 9999999,
+    //       // scrollTop: rect.height,
+    //       duration: 300,
+    //       success: (res) => {
+    //         console.log(res)
+    //       },
+    //       complete: (complete) => {
+    //         console.log('complete', complete)
+    //       }
+    //     })
+    //     // container.value.scrollTop
+    //   })
+    //   .exec()
 
-  // container.value.scrollTop = 99999
-  // document.getElementsByClassName('container')[0].scrollTop=9999
-  // }, 10)
+    // container.value.scrollTop = 99999
+    document.getElementsByClassName('container')[0].scrollTop = 9999
+  }, 10)
 }
 </script>
 

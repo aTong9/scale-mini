@@ -24,8 +24,8 @@
       </view>
     </view>
 
-    <view ref="container" class="container" id="container">
-      <scroll-view :scroll-y="true" @scroll="scroll" :scroll-top="scrollTop">
+    <view id="container" ref="container" class="container">
+      <scroll-view :scroll-y="true" :scroll-top="scrollTop" @scroll="scroll">
         <view>
           <view
             v-for="(item, idx) in state.messageList"
@@ -382,21 +382,24 @@ const scroll = (e) => {
 const scrollToBottom = () => {
   // setTimeout(() => {
   const query = Taro.createSelectorQuery()
-  query.select('#container').boundingClientRect((rect) => {
-    console.log('scrollTop', rect)
-    Taro.pageScrollTo({
-      scrollTop: 9999999,
-      // scrollTop: rect.height,
-      duration: 300,
-      success: (res) => {
-        console.log(res)
-      },
-      complete: (complete) => {
-        console.log('complete', complete)
-      }
+  query
+    .select('#container')
+    .boundingClientRect((rect) => {
+      console.log('scrollTop', rect)
+      Taro.pageScrollTo({
+        scrollTop: 9999999,
+        // scrollTop: rect.height,
+        duration: 300,
+        success: (res) => {
+          console.log(res)
+        },
+        complete: (complete) => {
+          console.log('complete', complete)
+        }
+      })
+      // container.value.scrollTop
     })
-    // container.value.scrollTop
-  }).exec()
+    .exec()
 
   // container.value.scrollTop = 99999
   // document.getElementsByClassName('container')[0].scrollTop=9999
@@ -404,8 +407,7 @@ const scrollToBottom = () => {
 }
 </script>
 
-
-<style lang="scss" >
+<style lang="scss">
 // scoped 会导致小程序没有样式
 .page {
   width: 100%;

@@ -76,7 +76,7 @@ const config = {
     }
   },
   h5: {
-    publicPath: '/',
+    publicPath: './',
     staticDirectory: 'static',
     esnextModules: ['nutui-taro'],
     postcss: {

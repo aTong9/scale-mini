@@ -24,20 +24,22 @@
       </view>
     </view>
 
-    <view ref="container" class="container">
-      <view>
-        <view
-          v-for="(item, idx) in state.messageList"
-          :key="idx"
-          :class="{ 'message-right': item.type === 'right' }"
-          class="message"
-        >
-          <view class="message-con">
-            <!-- {{ item.msg }} -->
-            <span v-html="item.msg"></span>
+    <view ref="container" class="container" id="container">
+      <scroll-view :scroll-y="true" @scroll="scroll" :scroll-top="scrollTop">
+        <view>
+          <view
+            v-for="(item, idx) in state.messageList"
+            :key="idx"
+            :class="{ 'message-right': item.type === 'right' }"
+            class="message"
+          >
+            <view class="message-con">
+              <!-- {{ item.msg }} -->
+              <span v-html="item.msg"></span>
+            </view>
           </view>
         </view>
-      </view>
+      </scroll-view>
     </view>
     <view class="footer">
       <view class="answer-group">
@@ -100,7 +102,8 @@ import scaleJson from './index.json'
 import NineChart3d from './components/nineChart3d.vue'
 
 const store = useStore()
-const container: any = ref(null)
+const container = ref(null)
+const scrollTop = ref(0)
 const Nine: any = reactive({
   data: [
     {
@@ -252,7 +255,7 @@ watch(
     // }
     // 没有=1分; 很少= 2分; 有时=3分; 经常=4分; 总是=5分
     state.answerItemList = ['没有', '很少', '有时', '经常', '总是']
-    // scrollToBottom()
+    scrollToBottom()
   }
 )
 const answerItemClick = (item: any, index: number) => {
@@ -372,15 +375,38 @@ onMounted(() => {
   //   backgroundColor: '#333131'
   // })
 })
+const scroll = (e) => {
+  console.log('scroll:', e)
+}
 // 滚动到底部
 const scrollToBottom = () => {
-  setTimeout(() => {
-    container.value.scrollTop = 99999
-  }, 10)
+  // setTimeout(() => {
+  const query = Taro.createSelectorQuery()
+  query.select('#container').boundingClientRect((rect) => {
+    console.log('scrollTop', rect)
+    Taro.pageScrollTo({
+      scrollTop: 9999999,
+      // scrollTop: rect.height,
+      duration: 300,
+      success: (res) => {
+        console.log(res)
+      },
+      complete: (complete) => {
+        console.log('complete', complete)
+      }
+    })
+    // container.value.scrollTop
+  }).exec()
+
+  // container.value.scrollTop = 99999
+  // document.getElementsByClassName('container')[0].scrollTop=9999
+  // }, 10)
 }
 </script>
 
-<style lang="scss" scoped>
+
+<style lang="scss" >
+// scoped 会导致小程序没有样式
 .page {
   width: 100%;
   height: 100vh;
@@ -470,7 +496,6 @@ const scrollToBottom = () => {
         align-items: center;
       }
     }
-
     .answer-item {
       display: inline-block;
       border: 1px solid #d9d9d9;

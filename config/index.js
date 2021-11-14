@@ -34,7 +34,7 @@ const config = {
   },
   sourceRoot: 'src',
   // outputRoot: 'dist',
-  outputRoot: 'docs', // 适配github pages
+  outputRoot: '/docs', // 适配github pages
   plugins: ['@tarojs/plugin-html'],
   terser: {
     enable: true,
@@ -73,92 +73,12 @@ const config = {
           generateScopedName: '[name]__[local]___[hash:base64:5]'
         }
       }
-    },
-    imageUrlLoaderOption: {
-      limit: 10000,
-      mimetype: 'image/png',
-      encodeing: 'base64'
-    },
-    webpackChain(chain, webpack) {
-      // chain.plugin('analyzer'
-      //   .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
-      // chain.mode("production");
-      // chain.optimization.minimize(true);
-      // chain.plugin("terser").use(TerserPlugin, [
-      //   {
-      //     cache: true,
-      //     extractComments: false,
-      //     terserOptions: {
-      //       output: {
-      //         comments: false
-      //       }
-      //     }
-      //   }
-      // ]);
-      // 给resolve.plugins添加ts paths 插件。自动插入alias依赖
-      // chain.resolve.plugin('ts-config-paths').use(new TsConfigPathsPlugin());
-      // 查看webpack配置
-      // console.log(chain.toString());
-    },
-    optimizeMainPackage: {
-      enable: true
-    },
-    optimization: {
-      minimizer: [
-        new TerserPlugin({
-          cache: true,
-          extractComments: false,
-          terserOptions: {
-            output: {
-              comments: false
-            },
-            compress: {
-              drop_debugger: true
-            }
-          }
-        }),
-        new CssMinimizerPlugin()
-      ],
-      runtimeChunk: {
-        name: 'manifest'
-      },
-      splitChunks: {
-        maxAsyncRequests: 5, // 由3改为5。个数少了，部分重复包会被打到每个chunk中，导致总大小有42M多。 2021.02.08
-        maxInitialRequests: 5,
-        minSize: 30000,
-        cacheGroups: {
-          vendors: {
-            test(module) {
-              return /[\\/]node_modules[\\/]/.test(module.resource) && module.miniType !== PARSE_AST_TYPE.COMPONENT
-            }
-          },
-          // alioss: {
-          //   // alioss单独打包，在使用的文件引入，不要在入口文件中引入。
-          //   test: module => {
-          //     return /ali-oss/.test(module.context);
-          //   },
-          //   name: "aliyun-oss",
-          //   chunks: "all",
-          //   priority: 18,
-          //   minChunks: 1
-          // },
-          nut: {
-            // 超过3个模块使用的nut单独打包
-            test: (module) => {
-              return /nut/.test(module.context)
-            },
-            name: 'nut',
-            chunks: 'all',
-            priority: 18,
-            minChunks: 3
-          }
-        }
-      }
     }
   },
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
+    esnextModules: ['nutui-taro'],
     postcss: {
       autoprefixer: {
         enable: true,

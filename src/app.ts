@@ -1,9 +1,8 @@
 import { createApp } from 'vue'
 import store from './store'
 import '@/utils/vue-ext'
-// import '@nutui/nutui-taro/dist/style.css';
-import '@nutui/nutui-taro/dist/styles/themes/default.scss'
 import './app.scss'
+
 import {
   Icon,
   Collapse,
@@ -16,6 +15,10 @@ import {
   Toast,
   Progress
 } from '@nutui/nutui-taro'
+
+// import '@nutui/nutui-taro/dist/style.css';
+import '@nutui/nutui-taro/dist/styles/themes/default.scss'
+
 const App: any = createApp({
   onShow(options) {
     console.log(options)
